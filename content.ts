@@ -25,27 +25,26 @@ try {
   };
 
   const isNewImageTabFirefox = () => {
-    // TODO: Implement this for Firefox
-    return false;
+    // is body only has one child and it is image
+    const hasSingleImageChild =
+      document.body.children.length === 1 &&
+      document.body.children[0]?.tagName === "IMG";
 
-    // // is body only has one child and it is image
-    // const hasSingleImageChild =
-    //   document.body.children.length === 1 &&
-    //   document.body.children[0]?.tagName === "IMG";
-    // // is image has shrinkToFit class
-    // const hasShrinkToFitClass =
-    //   document.body.children[0]?.classList.contains("shrinkToFit");
-    // // head has "resource://content-accessible/ImageDocument.css" stylesheet
-    // const hasImageDocumentStylesheet = Array.from(document.styleSheets).some(
-    //   (styleSheet) =>
-    //     styleSheet.href?.includes(
-    //       "resource://content-accessible/ImageDocument.css"
-    //     )
-    // );
+    // head has "resource://content-accessible/ImageDocument.css" stylesheet
+    const hasImageDocumentStylesheet = (() => {
+      const headChildren = document.head.children;
+      const headChildrenLength = headChildren.length;
+      for (let i = 0; i < headChildrenLength; i++) {
+        if (headChildren.item(i).tagName === "LINK" && 
+          headChildren.item(i).getAttribute("href") === "resource://content-accessible/ImageDocument.css"
+        ) {
+          return true;
+        }
+      }
+      return false;
+    })();
 
-    // return (
-    //   hasSingleImageChild && hasShrinkToFitClass && hasImageDocumentStylesheet
-    // );
+    return hasSingleImageChild && hasImageDocumentStylesheet;
   };
 
   if (isNewImageTabChromium() || isNewImageTabFirefox()) {
